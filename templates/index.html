@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <table class="table">
+
+        <!-- TABLE HEADER -->
+        <thead>
+            <tr>
+                <th scope="col">Symbol</th>
+                <th scope="col">Name</th>
+                <th scope="col">Shares</th>
+                <th scope="col">Price</th>
+                <th scope="col">TOTAL</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- SHARES -->
+            {% for entry in portfolio %}
+                <tr>
+                    <th scope="row">{{ entry.symbol }}</th>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.shares }}</td>
+                    <td>{{ entry.price | usd }}</td>
+                    <td>{{ entry.total | usd }}</td>
+                </tr>
+            {% endfor %}
+
+            <!-- CASH -->
+            <tr>
+                <th scope="row">CASH</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ cash | usd }}</td>
+            </tr>
+
+            <!-- TOTAL ROW -->
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">{{ grand_total | usd}}</th>
+            </tr>
+
+        </tbody>
+
+    </table>
+{% endblock %}
