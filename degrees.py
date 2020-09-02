@@ -98,7 +98,7 @@ def shortest_path(source, target):
     frontier = QueueFrontier()
     # init explored set
     explored = set()
-    c=0
+
     start = Node(state=source, parent=None, action=None)
     frontier.add(start)
 
@@ -111,7 +111,6 @@ def shortest_path(source, target):
 
         # Choose a node from the frontier
         node = frontier.remove()   
-        c+=1
 
         # Mark node as explored
         explored.add(node.state)
@@ -120,14 +119,9 @@ def shortest_path(source, target):
         for movie_id, person_id in neighbors_for_person(node.state):
             if not frontier.contains_state(person_id) and person_id not in explored:
                 child = Node(state=person_id, parent=node, action=movie_id)
-                # If node is the goal, then we have a solution
+                # If node is the goal, then we have a solution, else add to frontier
                 if child.state == target:
-                    node = child
-                    while node.parent is not None:
-                        s_path.append((node.action, node.state)) # (movie_id, person_id)
-                        node = node.parent
-                    s_path.reverse()
-                    return s_path
+                    return get_path(child)
                 else:
                     frontier.add(child)
 
@@ -169,6 +163,18 @@ def neighbors_for_person(person_id):
         for person_id in movies[movie_id]["stars"]:
             neighbors.add((movie_id, person_id))
     return neighbors
+
+
+def get_path(node):
+    """ Returns the path of a node """
+    # init shortest_path list
+    s_path = []
+    # resolve sequence
+    while node.parent is not None:
+        s_path.append((node.action, node.state)) # (movie_id, person_id)
+        node = node.parent
+    s_path.reverse()
+    return s_path
 
 
 if __name__ == "__main__":
