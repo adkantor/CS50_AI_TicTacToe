@@ -134,16 +134,21 @@ def minimax(board):
     if terminal(board):
         return None
 
+    # initialize alpha and beta for pruning
+    # inspired by:
+    # https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/
+    alpha, beta = -1000, 1000
+
     # get allowable actions
     allowable_actions = list(actions(board))
 
     # player X plays goes for max
     if player(board) == X:
-        values = [min_value(result(board, a)) for a in allowable_actions]
+        values = [min_value(result(board, a), alpha, beta) for a in allowable_actions]
         v = max(values)
     # player O goes for min
     else:
-        values = [max_value(result(board, a)) for a in allowable_actions]
+        values = [max_value(result(board, a), alpha, beta) for a in allowable_actions]
         v = min(values)
         
     # get action based on value v
@@ -153,29 +158,35 @@ def minimax(board):
     return optimal_action
 
     
-def max_value(board):
+def max_value(board, alpha, beta):
     """
     Returns higest value of possible actions of a board.
     """
     if terminal(board):
         return utility(board)
 
-    v = -2
+    v = -1000
     for action in actions(board):
-        v = max(v, min_value(result(board, action)))
+        v = max(v, min_value(result(board, action), alpha, beta))
+        alpha = max(alpha, v)
+        if alpha >= beta:
+            break
     
     return v
 
 
-def min_value(board):
+def min_value(board, alpha, beta):
     """
     Returns lowest value of possible actions of a board.
     """
     if terminal(board):
         return utility(board)
 
-    v = 2
+    v = 1000
     for action in actions(board):
-        v = min(v, max_value(result(board, action)))
+        v = min(v, max_value(result(board, action), alpha, beta))
+        beta = min(beta, v)
+        if alpha >= beta:
+            break
     
     return v
